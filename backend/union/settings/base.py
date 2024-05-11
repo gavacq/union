@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django_guid",
     "common",
     "users",
+    "tailwind"
 ]
 
 MIDDLEWARE = [
@@ -224,3 +225,5 @@ DEFENDER_LOGIN_FAILURE_LIMIT = 3
 DEFENDER_COOLOFF_TIME = 300  # 5 minutes
 DEFENDER_LOCKOUT_TEMPLATE = "defender/lockout.html"
 DEFENDER_REDIS_URL = config("REDIS_URL")
+
+TAILWIND_APP_NAME = "union"
