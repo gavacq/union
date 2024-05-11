@@ -3,6 +3,36 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 [![License: MIT](https://img.shields.io/github/license/vintasoftware/django-react-boilerplate.svg)](LICENSE.txt)
 
+## Getting started
+### local reqs:
+1. install python deps
+- need python 3.12
+- install with `pyenv install 3.12`
+- pyenv installation: https://github.com/pyenv/pyenv?tab=readme-ov-file#installation
+- verify:
+```
+[10/05/24 4:01:10] union ❱ pyenv local 3.12                                                                                                                             ( [0.08s]
+[10/05/24 4:01:50] union ❱ pyenv version                                                                                                                                (main ✗)
+3.12.0 (set by /home/gaa/src/union/.python-version)                                                                                                                       [0.07s]
+[10/05/24 4:01:58] union ❱ python --version                                                                                                                             (main ✗)
+Python 3.12.0                                                                                                                                                             [0.09s]
+[10/05/24 4:02:06] union ❱                                                                                                                                              (main ✗)
+```
+- `cp backend/union/settings/local.py.example backend/union/settings/local.py`
+- `cp backend/.env.example backend/.env`
+
+2. docker (containers for frontend and backend servers locally, production is different):
+- install https://docs.docker.com/desktop/
+- build docker images
+- `make migrations`
+- `make docker_makemigrations`
+  - if permission error, `chmod 777 -R backend/users/migrations` then run again
+https://github.com/vintasoftware/django-react-boilerplate/issues/618#issuecomment-1867264003
+- Run the migrations: `make docker_migrate`
+- Run the project: `make docker_up`
+- Access http://localhost:8000 on your browser and the project should be running there
+to stop containers, run make docker_down
+
 ## About
 
 A [Django](https://www.djangoproject.com/) project boilerplate/template with a multitude of state-of-the-art libraries and tools. If pairing Django with React is a possibility for your project or spinoff, this is the best solution available. Save time with tools like:
