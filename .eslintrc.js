@@ -4,8 +4,9 @@ module.exports = {
   root: true,
   extends: ['vinta/recommended'],
   rules: {
-    "default-param-last": "off",  // due to initialState in Redux
-    "@babel/camelcase": "off"
+    "default-param-last": "off", // due to initialState in Redux
+    "@babel/camelcase": "off",
+    "react/jsx-sort-props": "off",
   },
   env: {
     es6: true,
