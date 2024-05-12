@@ -7,6 +7,7 @@ import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import SubmitButton from "./SubmitButton"
 import Image from 'next/image'
 import ChatScreenshot from "./ChatScreenshot"
+import ChatScreenshotPicker from "./ChatScreenshotPicker"
 
 interface Chatlog {
   name: string
@@ -26,11 +27,7 @@ export default function ChatUpload() {
 
   return results ? (
     <div className="container">
-      <div className="grid grid-cols-2 gap-4">
-        {results.data.map((chatlog, index) => (
-          <ChatScreenshot key={index} chatlogs={chatlog} />
-        ))}
-      </div>
+      <ChatScreenshotPicker data={results.data}/>
       <div className="grid grid-cols-1 gap-4">
         {results.plots.map((plot, index) => (
           <Image key={index} src={`data:image/png;base64,${plot}`} alt="Plot" width={100} height={100}/>
