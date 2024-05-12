@@ -3,7 +3,8 @@
 import { use, useState } from "react";
 import ChatScreenshot from "./ChatScreenshot"
 import JSZip from 'jszip';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 
 interface ChatlogToDownload {
   [key: string]: string
@@ -55,7 +56,8 @@ export default function ChatScreenshotPicker({data}) {
           <ChatScreenshot key={index} chatlogs={chatlog} setSelectedChatLogs={setSelectedChatlogs} selectedChatLogs={selectedChatlogs} id={index} />
         ))}
       </div>
-        <button onClick={downloadSelectedChatlogsAsZip} className={`${!disabled ? 'bg-red1':'bg-gray1-dark'} text-black p-2  mt-6 rounded text-bold border-black`} type="submit" disabled={disabled}>Download Screenshots</button>
+        <button onClick={downloadSelectedChatlogsAsZip} className={`${!disabled ? 'bg-red1':'bg-gray1-dark'} text-black p-2  mt-6 rounded text-bold border-black w-full flex items-center justify-center space-x-4`} type="submit" disabled={disabled}><p>Download</p>
+        <FontAwesomeIcon icon={faDownload}/></button>
       </div>
   )
 }
