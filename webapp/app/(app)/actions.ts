@@ -1,6 +1,7 @@
 'use server';
 import { redirect } from 'next/navigation'
 import fs from 'fs/promises';
+import path from 'path';
 
 export async function saveEmail(formData: FormData) {
   const rawFormData = {
@@ -20,7 +21,8 @@ export async function analyzeChatlog(formData: FormData, demo: boolean) {
 
   let response;
   if (demo) {
-    const demoFileBuffer = await fs.readFile(process.cwd() + '/demoSample.txt', 'utf8');
+    const filePath = path.join(process.cwd(), 'demoSample.txt')
+    const demoFileBuffer = await fs.readFile(filePath, 'utf8');
     const demoFileBlob = new Blob([demoFileBuffer], { type: 'text/plain' });
     const demoFormData = new FormData();
     demoFormData.append('file', demoFileBlob, 'data.json');
