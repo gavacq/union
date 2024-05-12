@@ -27,7 +27,11 @@ export default function ChatUpload() {
 
   return results ? (
     <div className="container">
+      <p>
+        Review the generated chatlog screenshots carefully before downloading them.
+      </p>
       <ChatScreenshotPicker data={results.data}/>
+      <h2 className="font-bold">Relationship insights found in your chatlogs</h2>
       <div className="grid grid-cols-1 gap-4">
         {results.plots.map((plot, index) => (
           <Image key={index} src={`data:image/png;base64,${plot}`} alt="Plot" width={100} height={100}/>

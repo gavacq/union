@@ -28,7 +28,7 @@ export default function ChatScreenshot({ id, chatlogs, setSelectedChatLogs, sele
       }
       const dataUrl = canvas.toDataURL('image/jpeg');
       setImageUrl(dataUrl)
-      setSelectedChatLogs({ ...selectedChatLogs, [id]: dataUrl });
+      setSelectedChatLogs(prev => ({ ...prev, [id]: dataUrl }));
     }
     }, [chatlogs, width, height]); // Include missing dependencies in the dependency array
 
