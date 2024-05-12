@@ -18,11 +18,18 @@ export async function saveEmail(formData: FormData) {
 export async function analyzeChatlog(formData: FormData, demo: boolean) {
   const apiUrl = process.env.NODE_ENV === 'production' ? 'https://whatsapp-analyzer-ejz2k5vlqq-uc.a.run.app/upload-zip' : 'http://localhost:9000/upload-zip';
 
-
   let response;
   if (demo) {
-    const filePath = path.join(process.cwd(), 'demoSample.txt')
-    const demoFileBuffer = await fs.readFile(filePath, 'utf8');
+    let demoFileBuffer;
+    if (process.env.NODE_ENV === 'production') {
+      const res = await fetch('https://union-immigration.vercel.app/demoSample.txt');
+      const demoFileText = await res.text();
+      demoFileBuffer = Buffer.from(demoFileText, 'utf8');
+    } else {
+      const filePath = path.join(process.cwd(), 'demoSample.txt');
+      demoFileBuffer = await fs.readFile(filePath, 'utf8');
+    }
+
     const demoFileBlob = new Blob([demoFileBuffer], { type: 'text/plain' });
     const demoFormData = new FormData();
     demoFormData.append('file', demoFileBlob, 'data.json');
