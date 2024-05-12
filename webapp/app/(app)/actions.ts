@@ -1,5 +1,6 @@
 'use server';
 import { redirect } from 'next/navigation'
+import fs from 'fs/promises';
 
 export async function saveEmail(formData: FormData) {
   const rawFormData = {
@@ -13,22 +14,31 @@ export async function saveEmail(formData: FormData) {
   redirect('/analyze')
 }
 
-export async function analyzeChatlog(formData: FormData) {
-  console.log('formData', formData)
-  // const rawFormData = {
-  //   chatlog: formData.g,
-  // };
-  // post to localhost:9000/fixtures
+export async function analyzeChatlog(formData: FormData, demo: boolean) {
   const apiUrl = process.env.NODE_ENV === 'production' ? 'https://whatsapp-analyzer-ejz2k5vlqq-uc.a.run.app/upload-zip' : 'http://localhost:9000/upload-zip';
 
-  const response = await fetch(apiUrl, {
-    method: 'POST',
-    body: formData,
-  });
+
+  let response;
+  if (demo) {
+    const demoFileBuffer = await fs.readFile(process.cwd() + '/app/demoSample.txt', 'utf8');
+    const demoFileBlob = new Blob([demoFileBuffer], { type: 'text/plain' });
+    const demoFormData = new FormData();
+    demoFormData.append('file', demoFileBlob, 'data.json');
+
+    response = await fetch(apiUrl, {
+      method: 'POST',
+      body: demoFormData,
+    });
+  } else {
+    response = await fetch(apiUrl, {
+      method: 'POST',
+      body: formData,
+    });
+  }
+
   const json = await response.json();
 
   const data = json.data.map((chatlog) => {
-
     const parsed = JSON.parse(chatlog)
     return Object.values(parsed)
   })

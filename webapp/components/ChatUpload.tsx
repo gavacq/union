@@ -24,6 +24,7 @@ interface Results {
 export default function ChatUpload() {
   const [chatlog, setChatlog] = useState<File | null>(null)
   const [results, setResults] = useState<Results | null>(null)
+  const [demo, setDemo] = useState(false)
 
   return results ? (
     <div className="container">
@@ -42,7 +43,7 @@ export default function ChatUpload() {
 
     <form action={
       async (formData: FormData) => {
-        const results = await analyzeChatlog(formData)
+        const results = await analyzeChatlog(formData, demo)
         setResults(results)
       }
     } className="flex flex-col space-y-10 ">
@@ -51,11 +52,20 @@ export default function ChatUpload() {
           <FontAwesomeIcon icon={faUpload} className="text-green-500 text-2xl"/>
           <span className="text-green-600 mt-2">{chatlog ? chatlog.name : 'Upload WhatsApp Chat (zip)'}</span>
           <input type="file" name="file" placeholder="Upload chat" className="hidden" onChange={(e) => e.target.files && setChatlog(e.target.files[0])} />
+          
         </label>
 
         {/* <input type="file" name="chatlog" placeholder="Upload chatlog" className="rounded h-10 bg-gray1-light placeholder-black border-black border px-2" onChange={(e) => setChatlog(e.target.value)}/> */}
         {/* <button className={`${chatlog ? 'bg-red1':'bg-gray1-dark'} text-black p-2 rounded text-bold border-black`} type="submit" disabled={!chatlog}>Analyze Chat</button> */}
-        <SubmitButton input={chatlog} name="Analyze Chat" />
+
+        <SubmitButton input={chatlog || demo} name="Analyze Chat" />
+        <label className="flex space-x-2">
+          <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} />
+          <p>Use demo chatlog</p>
+        </label>
       </form>
+    
+    // add a demo button that will upload a sample chatlog
+    
   )
 }
