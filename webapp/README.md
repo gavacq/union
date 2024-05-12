@@ -1,4 +1,2 @@
-# Integrity Check
+# Union
 
-## Description
-A web app that allows users to quantify and analyze their personal growth through daily integrity ratings. 
