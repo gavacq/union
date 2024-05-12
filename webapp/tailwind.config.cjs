@@ -22,6 +22,15 @@ module.exports = {
         darkblue1: {
           DEFAULT: '#263749'
         },
+        "chatleft": {
+          DEFAULT: '#334956',
+        },
+        "chatright": {
+          DEFAULT: '#015d48',
+        },
+        "chatbackground": {
+          DEFAULT: '#070711',
+        },
       },
     },
   },

@@ -52,6 +52,7 @@ export default function ChatScreenshotPicker({data}) {
   return (
     <div className="flex flex-col items-center py-10">
       <div className="grid grid-cols-2 gap-4">
+      {/* <div className="flex"> */}
         {data.map((chatlog, index) => (
           <ChatScreenshot key={index} chatlogs={chatlog} setSelectedChatLogs={setSelectedChatlogs} selectedChatLogs={selectedChatlogs} id={index} />
         ))}

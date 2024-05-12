@@ -8,14 +8,33 @@ import { faCircle as faFullCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 
 
-export default function ChatScreenshot({ id, chatlogs, setSelectedChatLogs, selectedChatLogs, width = 500, height = 300 }) {
+export default function ChatScreenshot({ id, chatlogs, setSelectedChatLogs, selectedChatLogs, width = 370, height = 650 }) {
     const canvasRef = useRef(null);
     const [imageUrl, setImageUrl] = useState<null | string>(null)
     const [isModalOpen, setModalOpen] = useState(false);
 
+    const getLeftAndRightUsers = (chatlogs) => {
+        // Get the first two unique users in the chatlogs
+        const users = chatlogs.reduce((acc, log) => {
+            if (acc.length === 2) return acc;
+            if (!acc.includes(log.name)) {
+                acc.push(log.name);
+            }
+            return acc;
+        }
+        , []);
+
+        return {
+          leftUser: users[0],
+          rightUser: users[1]
+        }
+    }
+
     useEffect(() => {
       if (canvasRef.current) {
         const canvas = canvasRef.current as HTMLCanvasElement; // Add type assertion
+        canvas.width = width; // Ensure the canvas width is set correctly
+        canvas.height = height; // Ensure the canvas height is set correctly
         const ctx = canvas.getContext('2d');
         if (ctx) {
             ctx.clearRect(0, 0, width, height); // Clear previous drawings
@@ -26,39 +45,44 @@ export default function ChatScreenshot({ id, chatlogs, setSelectedChatLogs, sele
             const padding = 5; // Padding inside the bubble
             const borderRadius = 10; // Border radius for rounded rectangles
 
+            const { leftUser, rightUser } = getLeftAndRightUsers(chatlogs);
+            ctx.fillStyle = '#070711'; // Change '#ffffff' to any desired color
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // TODO: handle consecutive messages from the same user
-            chatlogs.forEach((log, index) => {
-                // Wrap text to fit within the maximum bubble width
-                const {maxWidth: maxLineWidth, lines} = wrapText(ctx, `${log.name}: ${log.message_text}`, maxBubbleWidth - 2 * padding);
+               chatlogs.forEach((log, index) => {
+            const { maxWidth: maxLineWidth, lines } = wrapText(ctx, log.message_text, maxBubbleWidth - 2 * padding);
 
-                // Calculate bubble height based on the number of lines
-                const bubbleHeight = lines.length * lineHeight + 2 * padding;
-                const bubbleWidth = maxLineWidth + 2 * padding;
+            const bubbleHeight = lines.length * lineHeight + 2 * padding;
+            const bubbleWidth = maxLineWidth + 2 * padding;
+            const xOffset = log.name === leftUser ? 10 : width - bubbleWidth;
+            const nameHeight = lineHeight; // Height for the name text
 
-                // Calculate x-offset for the bubble.
-                const xOffset = index % 2 === 0 ? 10 : width - (bubbleWidth);
+            // Draw the user's name above the bubble
+            ctx.fillStyle = '#ffffff'; // Text color for the name
+            ctx.fillText(`${log.name}, ${log.date} - ${log.time}`, xOffset, yOffset);
 
+            yOffset += 10; // Move down to draw the bubble
 
-                // Draw rounded rectangle
-                ctx.fillStyle = index % 2 === 0 ? '#add8e6' : '#ffb6c1'; // Alternate colors
-                roundRect(ctx, xOffset, yOffset, bubbleWidth, bubbleHeight, borderRadius, true, false);
+            // Draw rounded rectangle for the message bubble
+            ctx.fillStyle = log.name === leftUser ? '#334956' : '#015d48'; 
+            roundRect(ctx, xOffset, yOffset, bubbleWidth, bubbleHeight, borderRadius, true, false);
 
-                // Draw text within the rounded rectangle
-                ctx.fillStyle = '#000'; // Text color
-                lines.forEach((line, lineIndex) => {
-                    ctx.fillText(line, xOffset + padding, yOffset + padding + lineHeight * (lineIndex + 1));
-                });
-
-                yOffset += bubbleHeight + 10; // Increase y-offset for the next bubble
+            // Draw text inside the bubble
+            ctx.fillStyle = '#ffffff'; // Text color for the message
+            lines.forEach((line, lineIndex) => {
+              ctx.fillText(line, xOffset + padding, yOffset + padding + lineHeight * (lineIndex + 1));
             });
 
-            const dataUrl = canvas.toDataURL('image/jpeg');
-            setImageUrl(dataUrl);
-            setSelectedChatLogs(prev => ({ ...prev, [id]: dataUrl }));
+            yOffset += bubbleHeight + 10; // Increase y-offset for the next name and bubble
+          });
+
+          const dataUrl = canvas.toDataURL('image/jpeg');
+          setImageUrl(dataUrl);
+          setSelectedChatLogs(prev => ({ ...prev, [id]: dataUrl }));
         }
       }
-    }, [chatlogs, width, height, setImageUrl, setSelectedChatLogs, id]); // Proper dependencies
+    }, [chatlogs, width, height, setImageUrl, setSelectedChatLogs, id]);
 
     function wrapText(context, text, maxWidth) {
         const words = text.split(' ');
@@ -128,7 +152,7 @@ return (
         className={`relative border-2 ${selectedChatLogs[id] ? 'border-red-500' : 'border-transparent'}`}
         onClick={toggleSelection}
       >
-        <Image src={imageUrl} alt="Chat Screenshot" width={500} height={300} />
+        <Image src={imageUrl} alt="Chat Screenshot" width={370} height={650} />
         <button 
           className="absolute top-0 right-0 p-1" 
           onClick={(e) => {
@@ -153,4 +177,41 @@ return (
     <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
   </div>
 );
+  // return (
+  //   <div>
+  //     {imageUrl && (
+  //       <div 
+  //         className={`relative border-2 ${selectedChatLogs[id] ? 'border-red-500' : 'border-transparent'}`}
+  //         onClick={toggleSelection}
+  //         style={{
+  //           width: '50%', // Adjusts width for side-by-side previews
+  //           height: '100%', // Adjust height as necessary
+  //           overflow: 'hidden' // Hides the overflow
+  //         }}
+  //       >
+  //         <Image src={imageUrl} alt="Chat Screenshot" width={370} height={650} />
+  //         <button 
+  //           className="absolute top-0 right-0 p-1" 
+  //           onClick={(e) => {
+  //             e.stopPropagation();
+  //             e.preventDefault();
+  //             setModalOpen(true);
+  //           }}
+  //         >
+  //           <FontAwesomeIcon className="text-white" icon={faDownLeftAndUpRightToCenter} />
+  //         </button>
+  //           <FontAwesomeIcon className="text-red1 absolute top-0 left-0 p-1" icon={selectedChatLogs[id] ? faFullCircle : faCircle} />
+  //         {isModalOpen && (
+  //           <div 
+  //             className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50" 
+  //             onClick={() => setModalOpen(false)}
+  //           >
+  //            <Image src={imageUrl} alt="Chat Screenshot" layout="fill" objectFit="contain" />
+  //           </div>
+  //         )}
+  //       </div>
+  //     )}
+  //     <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+  //   </div>
+  // );
 }
