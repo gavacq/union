@@ -85,11 +85,14 @@ async def process(file):
     df = df[df['import'].str.match(r'^\d')]
     df = df[df['import'].apply(lambda x: len(x.split(" - ", 1))) >= 2]
     for index, row in df.iterrows():
-        line_split = row['import'].split(" - ", 1)
-        date_time = line_split[0]
-        message = line_split[1]
-        df.at[index, 'date'], df.at[index, 'time'] = date_time.split(", ", 1)
-        df.at[index, 'name'], df.at[index, 'message_text'] = message.split(": ", 1)
+        try:
+            line_split = row['import'].split(" - ", 1)
+            date_time = line_split[0]
+            message = line_split[1]
+            df.at[index, 'date'], df.at[index, 'time'] = date_time.split(", ", 1)
+            df.at[index, 'name'], df.at[index, 'message_text'] = message.split(": ", 1)
+        except:
+            print(f"Error in line: {row['import']}")
 
     # Stripping \n and trailing white space
     df['message_text'] = df['message_text'].apply(lambda x: x.strip() if isinstance(x, str) else x)
