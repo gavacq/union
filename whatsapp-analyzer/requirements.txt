@@ -1,4 +1,7 @@
 fastapi
 uvicorn[standard]
-python-multipart
 aiohttp
+matplotlib
+pandas
+seaborn
+pydantic

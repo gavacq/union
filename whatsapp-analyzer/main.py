@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 import base64
@@ -12,6 +12,7 @@ import os
 from json import loads, dumps
 import io
 import seaborn as sns
+import zipfile
 
 app = FastAPI()
 
@@ -19,7 +20,7 @@ app = FastAPI()
 async def main():
     content = """
 <body>
-<form action="/upload-zip/" enctype="multipart/form-data" method="post">
+<form action="/upload-zip" enctype="multipart/form-data" method="post">
 <input name="file" type="file">
 <input type="submit">
 </form>
@@ -27,19 +28,48 @@ async def main():
     """
     return HTMLResponse(content=content)
 
-
-@app.post("/upload-zip/")
-async def create_upload_file(file: UploadFile = File(...)):
-#    if file.content_type != 'application/zip':
-#        return {"message": "Invalid file type, please upload a ZIP file."}
-
-    path = file
+async def process(file):
     print(f'Trying to read {file.filename}')
+    # Ensure the file is read into memory
     contents = await file.read()
-    print('opened succesfully')
+
+    if file.content_type == 'application/zip':
+        try:
+            with zipfile.ZipFile(io.BytesIO(contents), 'r') as zip_ref:
+                # Get the list of file names
+                file_names = zip_ref.namelist()
+                
+                # Find the first text file
+                text_file_name = next((name for name in file_names if name.endswith('.txt')), None)
+
+                if text_file_name is not None:
+                    with zip_ref.open(text_file_name, 'r') as text_file:
+                        contents = text_file.read()
+                else:
+                    print('No text file found in the zip file')
+        except zipfile.BadZipFile:
+            print('Failed to read zip file')
+            raise HTTPException(status_code=400, detail="File is not a zip file")
+    elif file.content_type == 'text/plain':
+        # For text files, contents are already read
+        pass
+    else:
+        print('Unsupported file type')
+        raise HTTPException(status_code=400, detail="Unsupported file type")
+
+    print('opened successfully')
+
+    contents_decoded = contents.decode('utf-8')
+    # Parse the data
+    data = []
+    for line in contents_decoded.split('\n'):
+        data.append(line)
+    
 
     # Convert the bytes content to a pandas DataFrame
-    df = pd.read_csv(io.BytesIO(contents), sep='\t', header=None, names=['import'])  # Assuming the text file is tab-separated
+    # df = pd.read_csv(io.BytesIO(contents),header=None, names=['import'])  # Assuming the text file is tab-separated
+    df = pd.DataFrame(data, columns=['import'])
+
     print(f'dataframe created : {df.shape}')
     print(f'converted df succesfully : {df.shape}')
 
@@ -105,12 +135,18 @@ async def create_upload_file(file: UploadFile = File(...)):
     conv_json1 = context_df.to_json(orient="index")
     response["data"].append(conv_json1)
 
-    # Example data and plot (replace with actual data and plot)
-    example_data = {"example": "data"}
-    response["data"].append(example_data)
+    return response
 
-    #print(response)
+@app.post("/upload-zip")
+async def create_upload_file(request: Request, file: UploadFile = File(...)):
+    print("Headers Received:", request.headers)
+    print("Content-Type:", request.headers.get('content-type'))  # Check the boundary here
+    print(f'file uploaded : {file.filename}')
+    
+    response = await process(file)
+    
     return JSONResponse(content=response)
+
 
 ##################################
 ############ fixtures ############

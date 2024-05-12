@@ -14,17 +14,27 @@ export async function saveEmail(formData: FormData) {
 }
 
 export async function analyzeChatlog(formData: FormData) {
-  const rawFormData = {
-    chatlog: formData.get('chatlog'),
-  };
+  console.log('formData', formData)
+  // const rawFormData = {
+  //   chatlog: formData.g,
+  // };
   // post to localhost:9000/fixtures
-  const apiUrl = process.env.NODE_ENV === 'production' ? 'https://whatsapp-analyzer-ejz2k5vlqq-uc.a.run.app/fixtures' : 'http://localhost:9000/fixtures';
+  const apiUrl = process.env.NODE_ENV === 'production' ? 'https://whatsapp-analyzer-ejz2k5vlqq-uc.a.run.app/upload-zip' : 'http://localhost:9000/upload-zip';
 
   const response = await fetch(apiUrl, {
     method: 'POST',
-    body: JSON.stringify(rawFormData),
+    body: formData,
   });
-  const data = await response.json();
+  const json = await response.json();
 
-  return data
+  const data = json.data.map((chatlog) => {
+
+    const parsed = JSON.parse(chatlog)
+    return Object.values(parsed)
+  })
+
+  return {
+    data,
+    plots: json.plots,
+  }
 }
