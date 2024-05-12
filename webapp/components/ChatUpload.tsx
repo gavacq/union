@@ -55,7 +55,7 @@ export default function ChatUpload() {
 
         {/* <input type="file" name="chatlog" placeholder="Upload chatlog" className="rounded h-10 bg-gray1-light placeholder-black border-black border px-2" onChange={(e) => setChatlog(e.target.value)}/> */}
         {/* <button className={`${chatlog ? 'bg-red1':'bg-gray1-dark'} text-black p-2 rounded text-bold border-black`} type="submit" disabled={!chatlog}>Analyze Chat</button> */}
-        <SubmitButton input={chatlog} />
+        <SubmitButton input={chatlog} name="Analyze Chat" />
       </form>
   )
 }
