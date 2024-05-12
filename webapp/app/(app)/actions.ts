@@ -18,7 +18,7 @@ export async function analyzeChatlog(formData: FormData) {
     chatlog: formData.get('chatlog'),
   };
   // post to localhost:9000/fixtures
-  const apiUrl = process.env.NODE_ENV === 'production' ? 'https://whatsapp-analyzer-ejz2k5vlqq-uc.a.run.app' : 'http://localhost:9000/fixtures';
+  const apiUrl = process.env.NODE_ENV === 'production' ? 'https://whatsapp-analyzer-ejz2k5vlqq-uc.a.run.app/fixtures' : 'http://localhost:9000/fixtures';
 
   const response = await fetch(apiUrl, {
     method: 'POST',
