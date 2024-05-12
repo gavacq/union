@@ -14,3 +14,16 @@ export async function saveEmail(formData: FormData) {
 
   redirect('/upload')
 }
+
+export async function analyzeChatlog(formData: FormData) {
+  const rawFormData = {
+    chatlog: formData.get('chatlog'),
+  };
+  // Test it out:
+  console.log(rawFormData);
+  
+  // wait for 5 s
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  redirect('/results')
+}
