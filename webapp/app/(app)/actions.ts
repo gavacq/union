@@ -12,7 +12,7 @@ export async function saveEmail(formData: FormData) {
     body: JSON.stringify(rawFormData),
   });
 
-  redirect('/upload')
+  redirect('/analyze')
 }
 
 export async function analyzeChatlog(formData: FormData) {
@@ -22,8 +22,15 @@ export async function analyzeChatlog(formData: FormData) {
   // Test it out:
   console.log(rawFormData);
   
-  // wait for 5 s
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  redirect('/results')
+  // post to localhost:9000/fixtures
+  const response = await fetch('http://localhost:9000/fixtures', {
+    method: 'POST',
+    body: JSON.stringify(rawFormData),
+  });
+  const data = await response.json();
+  console.log(data);
+
+  return data
 }
