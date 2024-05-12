@@ -60,14 +60,7 @@ return (
         >
           <FontAwesomeIcon className="text-white" icon={faDownLeftAndUpRightToCenter} />
         </button>
-        <button 
-          className="absolute top-0 left-0 p-1" 
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <FontAwesomeIcon className="text-white" icon={selectedChatLogs[id] ? faCheckSquare : faSquare} />
-        </button>
+          <FontAwesomeIcon className="text-white absolute top-0 left-0 p-1" icon={selectedChatLogs[id] ? faCheckSquare : faSquare} />
         {isModalOpen && (
           <div 
             className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50" 
