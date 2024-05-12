@@ -2,10 +2,12 @@
 'use client'
 import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownLeftAndUpRightToCenter } from '@fortawesome/free-solid-svg-icons';
 
 export default function ChatScreenshot({ chatlogs, width = 500, height = 300 }) {
     const canvasRef = useRef(null);
-    // const [isModalOpen, setModalOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
     const [imageUrl, setImageUrl] = useState<null | string>(null)
 
     useEffect(() => {
@@ -25,38 +27,30 @@ export default function ChatScreenshot({ chatlogs, width = 500, height = 300 }) 
       const dataUrl = canvas.toDataURL('image/jpeg');
       setImageUrl(dataUrl)
     }
-    }, []); // Redraw when chatlogs or dimensions change
+    }, [chatlogs, width, height]); // Include missing dependencies in the dependency array
 
-    // const downloadImage = () => {
-    //   const canvas = canvasRef.current as unknown as HTMLCanvasElement; // Add type assertion
-    //   if (canvas) {
-    //     const image = canvas.toDataURL('image/jpeg');
-    //     const link = document.createElement('a');
-    //     link.href = image;
-    //     link.download = 'chat_image.jpg';
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //   }
-    // };
-
-    // const toggleModal = () => {
-    //   setModalOpen(!isModalOpen);
-    // };
-
-    return (
-      // <div>
-      //   <div style={{ width: '50vw', height: 'auto', position: 'relative', display: 'inline-block' }}>
-      //     <canvas ref={canvasRef} width={width} height={height} style={{ width: '100%', height: 'auto', border: '1px solid #ccc' }} />
-      //     <button onClick={toggleModal} style={{ position: 'absolute', top: 0, right: 0 }}>
-      //       {isModalOpen ? 'Minimize' : 'Maximize'}
-      //     </button>
-      //   </div>
-      //   <Image src={(canvasRef.current as unknown as HTMLCanvasElement)?.toDataURL('image/jpeg')} alt="Chat Image" style={{ maxWidth: '90%', maxHeight: '90%' }} />
-      // </div>
-    <div>
-      {imageUrl && <Image src={imageUrl} alt="Chat Screenshot" width={500} height={300} />}
-      <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
-    </div>
-    );
+  return (
+  <div>
+    {imageUrl && (
+      <div className="relative">
+        <Image src={imageUrl} alt="Chat Screenshot" width={500} height={300} />
+        <button 
+          className="absolute top-0 right-0 p-1" 
+          onClick={() => setModalOpen(true)}
+        >
+          <FontAwesomeIcon className="text-white" icon={faDownLeftAndUpRightToCenter} />
+        </button>
+        {isModalOpen && (
+          <div 
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50" 
+            onClick={() => setModalOpen(false)}
+          >
+            <Image src={imageUrl} alt="Chat Screenshot" layout="fill" objectFit="contain" />
+          </div>
+        )}
+      </div>
+    )}
+    <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+  </div>
+  );
 }
