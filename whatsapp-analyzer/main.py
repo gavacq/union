@@ -164,7 +164,7 @@ async def process(file):
     subjectivyty_df = df.sort_values(by=['subjectivity'], ascending=False).head(5)
 
     ### Converseraiton
-    time_gap_threshold = pd.Timedelta(minutes=30)
+    time_gap_threshold = pd.Timedelta(minutes=60*24)
     df['Timestamp'] = pd.to_datetime(df['date'] + ' ' + df['time'], format='mixed')
 
     session_id = 0

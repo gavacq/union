@@ -26,8 +26,9 @@ export async function analyzeChatlog(formData: FormData, demo: boolean) {
       const demoFileText = await res.text();
       demoFileBuffer = Buffer.from(demoFileText, 'utf8');
     } else {
-      const filePath = path.join(process.cwd(), 'demoSample.txt');
-      demoFileBuffer = await fs.readFile(filePath, 'utf8');
+      const res = await fetch('https://union-immigration.vercel.app/demoSample.txt');
+      const demoFileText = await res.text();
+      demoFileBuffer = Buffer.from(demoFileText, 'utf8');
     }
 
     const demoFileBlob = new Blob([demoFileBuffer], { type: 'text/plain' });
@@ -50,7 +51,7 @@ export async function analyzeChatlog(formData: FormData, demo: boolean) {
   const data = json.data.map((chatlog) => {
     const parsed = JSON.parse(chatlog)
     return Object.values(parsed)
-  })
+  }).filter((chatlog) => chatlog.length > 0);
 
   return {
     data,
