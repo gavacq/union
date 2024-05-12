@@ -20,7 +20,7 @@ export async function analyzeChatlog(formData: FormData, demo: boolean) {
 
   let response;
   if (demo) {
-    const demoFileBuffer = await fs.readFile(process.cwd() + '/app/demoSample.txt', 'utf8');
+    const demoFileBuffer = await fs.readFile(process.cwd() + '/demoSample.txt', 'utf8');
     const demoFileBlob = new Blob([demoFileBuffer], { type: 'text/plain' });
     const demoFormData = new FormData();
     demoFormData.append('file', demoFileBlob, 'data.json');
