@@ -1,10 +1,13 @@
-Sure, here is a more concise version suitable for a GitHub README:
-
 # Union - Simplify Immigration Sponsorship
 
 ## Overview
 
 Union leverages AI to streamline the process of proving relationships for immigration sponsorship by processing chat data efficiently, removing the need for manual message digging.
+
+## Demo
+
+[![Watch the video](https://github.com/gavacq/union/assets/8844891/7d672c02-0b87-4085-ab29-dbaaaf3ecb4a
+)](https://www.youtube.com/watch?v=W9I8CpVKAM8)
 
 ## Features
 
